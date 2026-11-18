@@ -133,6 +133,115 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
 #aiFace.talk{animation:talk .5s infinite alternate}
 @keyframes talk{to{box-shadow:0 0 0 12px rgba(143,124,255,0);transform:scale(1.06)}}
 #ai.min #aiBubble{display:none}
+body.fizmode #ai{right:auto;left:18px;flex-direction:row-reverse;max-width:min(440px,calc(100vw - 36px))}
+body.fizmode #aiBubble{border-radius:18px 18px 18px 4px}
+
+/* ---------- Fizminutka ---------- */
+.fizwrap{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:stretch}
+.stage{--b:1s;position:relative;min-height:460px;border-radius:24px;overflow:hidden;border:3px solid var(--gold);background:#efe3c6}
+.stage .room{position:absolute;inset:0;width:100%;height:100%}
+.room .sechand{transform-box:view-box;transform-origin:480px 78px;animation:tick 60s steps(60) infinite}
+@keyframes tick{to{transform:rotate(360deg)}}
+.room .wcloud{animation:wdrift 18s linear infinite}
+@keyframes wdrift{from{transform:translateX(-60px)}to{transform:translateX(170px)}}
+.stage .sun{position:absolute;top:26px;left:34px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#fff6c4,#f6c94a 60%,rgba(246,201,74,0) 72%);animation:sunp 4s ease-in-out infinite alternate}
+@keyframes sunp{to{transform:scale(1.15)}}
+.cloud{position:absolute;width:120px;height:36px;background:#fff;border-radius:40px;opacity:.85;animation:drift 40s linear infinite}
+.cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud:before{width:50px;height:50px;top:-24px;left:18px}.cloud:after{width:38px;height:38px;top:-16px;left:58px}
+.cloud.c1{top:60px;left:-140px}.cloud.c2{top:120px;left:-140px;animation-duration:58s;animation-delay:-25s;transform:scale(.7)}
+@keyframes drift{to{left:110%}}
+.hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:45%}
+#fig{position:absolute;left:50%;bottom:4%;height:78%;transform:translateX(-50%);overflow:visible}
+#fig g{transform-box:view-box}
+#fig .armL{transform-origin:84px 73px}#fig .armR{transform-origin:116px 73px}
+#fig .upper{transform-origin:100px 148px}#fig .head{transform-origin:100px 58px}
+#fig .legL{transform-origin:93px 146px}#fig .legR{transform-origin:107px 146px}
+.exemoji{position:absolute;top:18px;right:22px;font-size:70px;animation:bob 1.6s ease-in-out infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+@keyframes bob{50%{transform:translateY(-12px) rotate(6deg)}}
+.breathring,.clapfx{display:none;position:absolute;left:50%;top:44%;transform:translate(-50%,-50%)}
+.breathring{width:330px;height:330px;border-radius:50%;border:6px solid rgba(255,255,255,.7);box-shadow:0 0 40px rgba(255,255,255,.6)}
+.clapfx{font-size:64px;top:46%}
+.stage.paused *{animation-play-state:paused!important}
+/* idle / ready: лёгкое покачивание */
+.stage.ex-idle #fig .all,.stage.ex-ready #fig .all{animation:idle 2s ease-in-out infinite;transform-origin:100px 240px}
+@keyframes idle{50%{transform:translateY(-4px)}}
+/* 1. Высокая юрта — потягивание */
+.stage.ex-stretch #fig .armL,.stage.ex-done #fig .armL{animation:upL calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-stretch #fig .armR,.stage.ex-done #fig .armR{animation:upR calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-stretch #fig .all{animation:rise calc(var(--b)*4) ease-in-out infinite alternate}
+@keyframes upL{to{transform:rotate(155deg)}}@keyframes upR{to{transform:rotate(-155deg)}}@keyframes rise{to{transform:translateY(-10px)}}
+.stage.ex-done #fig .armL,.stage.ex-done #fig .armR{animation-duration:.5s}
+/* 2. Взгляд на степь — повороты головы */
+.stage.ex-head #fig .eyes{animation:look calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-head #fig .head{animation:turnh calc(var(--b)*4) ease-in-out infinite alternate}
+@keyframes look{from{transform:translateX(-7px)}to{transform:translateX(7px)}}
+@keyframes turnh{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+/* 3. Беркут — круги руками */
+.stage.ex-arms #fig .armL{animation:circL calc(var(--b)*4) linear infinite}
+.stage.ex-arms #fig .armR{animation:circR calc(var(--b)*4) linear infinite}
+@keyframes circL{from{transform:rotate(68deg)}to{transform:rotate(428deg)}}
+@keyframes circR{from{transform:rotate(-68deg)}to{transform:rotate(-428deg)}}
+/* 4/8. Конь и байга — шаг/бег на месте */
+.stage.ex-march #fig .legL,.stage.ex-run #fig .legL{animation:lift calc(var(--b)*2) ease-in-out infinite}
+.stage.ex-march #fig .legR,.stage.ex-run #fig .legR{animation:lift calc(var(--b)*2) ease-in-out infinite;animation-delay:calc(var(--b)*-1)}
+.stage.ex-march #fig .armL,.stage.ex-run #fig .armL{animation:swing calc(var(--b)*2) ease-in-out infinite}
+.stage.ex-march #fig .armR,.stage.ex-run #fig .armR{animation:swing2 calc(var(--b)*2) ease-in-out infinite}
+.stage.ex-march #fig .all,.stage.ex-run #fig .all{animation:hop var(--b) ease-in-out infinite}
+@keyframes lift{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}
+@keyframes swing{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
+@keyframes swing2{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
+@keyframes hop{50%{transform:translateY(-6px)}}
+/* 5. Степной ветер — наклоны в стороны */
+.stage.ex-bend #fig .upper{animation:bend calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-bend #fig .armL{transform:rotate(-28deg)}.stage.ex-bend #fig .armR{transform:rotate(28deg)}
+@keyframes bend{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+/* 6. Собираем травы — приседания */
+.stage.ex-squat #fig .legL{transform-origin:80px 234px;animation:sqLeg calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-squat #fig .legR{transform-origin:120px 234px;animation:sqLeg calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-squat #fig .upper{animation:sqUp calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-squat #fig .armL{animation:fwdL calc(var(--b)*4) ease-in-out infinite alternate}
+.stage.ex-squat #fig .armR{animation:fwdR calc(var(--b)*4) ease-in-out infinite alternate}
+@keyframes sqLeg{to{transform:scaleY(.62) scaleX(1.25)}}
+@keyframes sqUp{to{transform:translateY(34px)}}
+@keyframes fwdL{to{transform:rotate(68deg)}}@keyframes fwdR{to{transform:rotate(-68deg)}}
+/* 7. Ритм домбры — хлопки */
+.stage.ex-clap #fig .armL{animation:clapL calc(var(--b)*2) ease-in-out infinite}
+.stage.ex-clap #fig .armR{animation:clapR calc(var(--b)*2) ease-in-out infinite}
+.stage.ex-clap .clapfx{display:block;animation:burst calc(var(--b)*2) ease-out infinite}
+@keyframes clapL{0%,100%{transform:rotate(-47deg)}50%{transform:rotate(8deg)}}
+@keyframes clapR{0%,100%{transform:rotate(47deg)}50%{transform:rotate(-8deg)}}
+@keyframes burst{0%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}30%,100%{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
+/* 9. Оглянись на аул — повороты корпуса */
+.stage.ex-twist #fig .upper{animation:twist calc(var(--b)*4) ease-in-out infinite}
+.stage.ex-twist #fig .armL{transform:rotate(68deg)}.stage.ex-twist #fig .armR{transform:rotate(-68deg)}
+@keyframes twist{0%,100%{transform:scaleX(1)}25%{transform:scaleX(.5) skewY(5deg)}75%{transform:scaleX(.5) skewY(-5deg)}}
+/* 10. Дыхание */
+.stage.ex-breath #fig .armL{animation:upL 4s ease-in-out infinite alternate}
+.stage.ex-breath #fig .armR{animation:upR 4s ease-in-out infinite alternate}
+.stage.ex-breath .breathring{display:block;animation:breathe 4s ease-in-out infinite alternate}
+@keyframes breathe{from{transform:translate(-50%,-50%) scale(.55);opacity:.4}to{transform:translate(-50%,-50%) scale(1.05);opacity:1}}
+
+.fizinfo{background:var(--card);border:2px solid #34507a;border-radius:24px;padding:22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.fizstep{color:var(--muted);font-size:15px}
+.fizname{font-family:Georgia,serif;color:var(--gold2);font-size:clamp(24px,2.6vw,34px);line-height:1.2}
+.fiztxt{font-size:18px;line-height:1.45;min-height:78px}
+.ringbox{position:relative;width:170px;height:170px}
+.ringbox svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rbg{fill:none;stroke:#0e1828;stroke-width:10}
+.rfg{fill:none;stroke:var(--gold);stroke-width:10;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:0;transition:stroke-dashoffset .1s linear}
+.ringnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:800;color:var(--gold2)}
+.ringnum.warn{color:var(--bad);animation:pulseTxt .5s infinite alternate}
+@keyframes pulseTxt{to{transform:scale(1.12)}}
+.breathlbl{position:absolute;left:0;right:0;bottom:22px;font-size:16px;color:#cfe8ff}
+.fiznext{color:var(--muted);font-size:15px;min-height:20px}
+.fizctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:auto}
+.btn-ai.off{opacity:.45}
+.fizbar{position:relative;height:16px;border-radius:99px;background:#0e1828;margin-top:18px;overflow:hidden;display:flex}
+.fizbar .seg{height:100%;border-right:2px solid var(--bg)}
+.fizbar .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--ok),var(--gold));border-radius:99px;opacity:.9;transition:width .1s linear}
+.fiztotal{text-align:center;color:var(--gold2);margin-top:8px;font-size:17px}
+@media (max-width:900px){.fizwrap{grid-template-columns:1fr}.stage{min-height:380px}}
 
 /* ---------- Voice recorder ---------- */
 .recinfo{max-width:900px;margin:0 auto 18px;background:rgba(143,124,255,.12);border:2px solid var(--ai);border-radius:16px;padding:14px 18px;font-size:16px;line-height:1.5;color:#e2dcff}
@@ -179,8 +288,9 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
       <button data-s="chests" class="on">🎁 Сундуки</button>
       <button data-s="tf">✔✘ Верно / Неверно</button>
       <button data-s="match">🔗 Соедини</button>
+      <button data-s="fiz">🤸 Физминутка</button>
     </nav>
-    <button class="iconbtn on" id="voiceBtn" title="Включить / выключить голос ИИ-ведущего">🗣 Голос</button>
+    <button class="iconbtn on" id="voiceBtn" title="Включить / выключить голос в физминутке">🗣 Голос</button>
     <select id="voiceSel" class="iconbtn" title="Выбрать голос ведущего" style="max-width:190px"></select>
     <button class="iconbtn" id="recBtn" title="Записать свой голос для ведущего">🎙 Мой голос</button>
     <button class="iconbtn" id="soundBtn" title="Звуки">🔊</button>
@@ -193,7 +303,7 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
   <section id="s-chests">
     <h2 class="sec-title">Сундуки с заданиями</h2>
     <div class="sec-sub">Выбери сундук — внутри вопрос, задание или интересный факт.</div>
-    <button class="rulesbtn" data-rules="chests">🤖 ИИ-ведущий, объясни правила</button>
+    <button class="rulesbtn" data-rules="chests">🤖 Правила игры</button>
     <div class="progress" id="chestProg"></div>
     <div class="grid" id="grid"></div>
     <div class="toolbar"><button class="btn" id="resetChests">↺ Закрыть все сундуки</button></div>
@@ -203,7 +313,7 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
   <section id="s-tf" class="hidden">
     <h2 class="sec-title">Верно или неверно?</h2>
     <div class="sec-sub">Нажми кнопку или скажи ответ вслух в микрофон.</div>
-    <button class="rulesbtn" data-rules="tf">🤖 ИИ-ведущий, объясни правила</button>
+    <button class="rulesbtn" data-rules="tf">🤖 Правила игры</button>
     <div class="tf">
       <div class="prog" id="tfProg"></div>
       <div class="card" id="tfCard"></div>
@@ -211,7 +321,7 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
         <button class="big" style="background:var(--ok)" data-v="1">Верно</button>
         <button class="big" style="background:var(--bad)" data-v="0">Неверно</button>
       </div>
-      <div class="btns"><button class="btn-ai" id="tfMic">🎤 Ответить голосом</button><button class="btn-ai" id="tfRead">🔈 Прочитать вслух</button></div>
+      <div class="btns"><button class="btn-ai" id="tfMic">🎤 Ответить голосом</button></div>
       <div class="heard" id="tfHeard"></div>
       <div class="expl" id="tfExpl"></div>
       <div class="toolbar"><button class="btn hidden" id="tfNext">Дальше →</button><button class="btn" id="tfRestart">↺ Сначала</button></div>
@@ -222,7 +332,7 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
   <section id="s-match" class="hidden">
     <h2 class="sec-title">Соедини пары</h2>
     <div class="sec-sub">Нажми на слово слева, затем на подходящее объяснение справа.</div>
-    <button class="rulesbtn" data-rules="match">🤖 ИИ-ведущий, объясни правила</button>
+    <button class="rulesbtn" data-rules="match">🤖 Правила игры</button>
     <div class="seg" id="matchSeg">
       <button data-m="heroes" class="on">Герои романа</button>
       <button data-m="terms">Понятия урока</button>
@@ -231,10 +341,114 @@ main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
     <div class="toolbar"><button class="btn-ai" id="matchHint">💡 Подсказка ИИ</button><button class="btn" id="matchRestart">↺ Перемешать</button></div>
   </section>
 
+  <!-- Fizminutka -->
+  <section id="s-fiz" class="hidden">
+    <h2 class="sec-title">🤸 Физминутка в классе</h2>
+    <div class="sec-sub">4 минуты · 10 упражнений · выполняем стоя рядом с партой</div>
+    <div class="fizwrap">
+      <div class="stage" id="stage">
+        <svg class="room" viewBox="0 0 800 460" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb8ea"/><stop offset="1" stop-color="#cfeaf9"/></linearGradient>
+            <clipPath id="winClip"><rect x="572" y="52" width="156" height="166"/></clipPath>
+          </defs>
+          <!-- стена и пол -->
+          <rect width="800" height="335" fill="#efe3c6"/>
+          <rect y="140" width="800" height="6" fill="#e2d2ad"/>
+          <rect y="335" width="800" height="125" fill="#b9814f"/>
+          <g stroke="#a06d40" stroke-width="2"><line x1="0" y1="365" x2="800" y2="365"/><line x1="0" y1="400" x2="800" y2="400"/><line x1="0" y1="440" x2="800" y2="440"/>
+            <line x1="120" y1="335" x2="100" y2="365"/><line x1="330" y1="365" x2="320" y2="400"/><line x1="560" y1="335" x2="575" y2="365"/><line x1="700" y1="400" x2="720" y2="440"/><line x1="220" y1="400" x2="230" y2="440"/></g>
+          <rect y="327" width="800" height="10" fill="#8a5a2b"/>
+          <!-- доска -->
+          <rect x="48" y="40" width="352" height="196" rx="6" fill="#8a5a2b"/>
+          <rect x="60" y="52" width="328" height="172" fill="#2f5d46"/>
+          <text x="224" y="110" text-anchor="middle" font-family="Georgia,serif" font-size="34" fill="#f3f3ea" opacity=".92">Физминутка!</text>
+          <text x="224" y="146" text-anchor="middle" font-family="Segoe UI,Arial" font-size="18" fill="#f3f3ea" opacity=".75">9 класс · 4 минуты</text>
+          <g stroke="#f3f3ea" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round">
+            <circle cx="110" cy="180" r="8"/><line x1="110" y1="188" x2="110" y2="208"/><line x1="96" y1="176" x2="110" y2="194"/><line x1="124" y1="176" x2="110" y2="194"/>
+            <path d="M300 200 q15 -25 30 0 q15 25 30 0"/><line x1="160" y1="196" x2="260" y2="196"/>
+          </g>
+          <rect x="70" y="236" width="308" height="8" fill="#6b4a2b"/>
+          <rect x="300" y="231" width="22" height="6" rx="2" fill="#fff"/><rect x="330" y="231" width="16" height="6" rx="2" fill="#f6d98a"/>
+          <!-- часы -->
+          <circle cx="480" cy="78" r="30" fill="#fff" stroke="#3a3a3a" stroke-width="5"/>
+          <g stroke="#3a3a3a" stroke-linecap="round"><line x1="480" y1="78" x2="480" y2="60" stroke-width="4"/><line x1="480" y1="78" x2="493" y2="84" stroke-width="4"/></g>
+          <line class="sechand" x1="480" y1="82" x2="480" y2="54" stroke="#c0504d" stroke-width="2"/>
+          <circle cx="480" cy="78" r="3" fill="#3a3a3a"/>
+          <!-- окно -->
+          <rect x="562" y="42" width="176" height="186" fill="#f8f6f0"/>
+          <g clip-path="url(#winClip)">
+            <rect x="572" y="52" width="156" height="166" fill="url(#sky)"/>
+            <circle cx="700" cy="85" r="18" fill="#ffe27a"/>
+            <g class="wcloud"><ellipse cx="600" cy="120" rx="30" ry="11" fill="#fff"/><ellipse cx="612" cy="111" rx="16" ry="12" fill="#fff"/></g>
+            <path d="M572 218 Q620 180 670 205 T728 195 V218Z" fill="#7cb87a"/>
+          </g>
+          <line x1="650" y1="52" x2="650" y2="218" stroke="#f8f6f0" stroke-width="7"/><line x1="572" y1="135" x2="728" y2="135" stroke="#f8f6f0" stroke-width="7"/>
+          <rect x="554" y="226" width="192" height="10" rx="3" fill="#ddd3bf"/>
+          <!-- цветок на подоконнике -->
+          <rect x="690" y="206" width="26" height="22" rx="3" fill="#c0504d"/>
+          <g fill="#4f9a5a"><ellipse cx="703" cy="196" rx="6" ry="14"/><ellipse cx="694" cy="200" rx="5" ry="11" transform="rotate(-30 694 200)"/><ellipse cx="712" cy="200" rx="5" ry="11" transform="rotate(30 712 200)"/></g>
+          <!-- парты -->
+          <g>
+            <rect x="20" y="300" width="190" height="16" rx="3" fill="#d9b27c"/><rect x="34" y="316" width="10" height="70" fill="#5b5b5b"/><rect x="186" y="316" width="10" height="70" fill="#5b5b5b"/>
+            <rect x="40" y="318" width="150" height="22" fill="#c9a06b"/>
+            <rect x="60" y="291" width="44" height="9" fill="#4aa3e8"/><rect x="66" y="285" width="34" height="6" fill="#e85a9a"/>
+          </g>
+          <g>
+            <rect x="590" y="300" width="190" height="16" rx="3" fill="#d9b27c"/><rect x="604" y="316" width="10" height="70" fill="#5b5b5b"/><rect x="756" y="316" width="10" height="70" fill="#5b5b5b"/>
+            <rect x="610" y="318" width="150" height="22" fill="#c9a06b"/>
+            <rect x="690" y="293" width="40" height="7" fill="#fff"/><line x1="696" y1="291" x2="728" y2="285" stroke="#e8b94a" stroke-width="3"/>
+          </g>
+        </svg>
+        <div class="exemoji" id="exEmoji">🤸</div>
+        <div class="breathring"></div>
+        <div class="clapfx">👏</div>
+        <svg id="fig" viewBox="0 0 200 260">
+          <ellipse cx="100" cy="240" rx="58" ry="8" fill="rgba(0,0,0,.25)"/>
+          <g class="all">
+            <g class="legL"><line x1="93" y1="146" x2="80" y2="234" stroke="#1f3b66" stroke-width="12" stroke-linecap="round"/></g>
+            <g class="legR"><line x1="107" y1="146" x2="120" y2="234" stroke="#1f3b66" stroke-width="12" stroke-linecap="round"/></g>
+            <g class="upper">
+              <line x1="100" y1="64" x2="100" y2="148" stroke="#e8b94a" stroke-width="22" stroke-linecap="round"/>
+              <line x1="84" y1="73" x2="116" y2="73" stroke="#e8b94a" stroke-width="12" stroke-linecap="round"/>
+              <g class="armL"><line x1="84" y1="73" x2="61" y2="129" stroke="#f6d98a" stroke-width="10" stroke-linecap="round"/></g>
+              <g class="armR"><line x1="116" y1="73" x2="139" y2="129" stroke="#f6d98a" stroke-width="10" stroke-linecap="round"/></g>
+              <g class="head">
+                <circle cx="100" cy="40" r="19" fill="#f6d98a"/>
+                <path d="M81 34 Q100 10 119 34 Z" fill="#c0504d"/>
+                <g class="eyes"><circle cx="93" cy="41" r="2.6" fill="#2a1c00"/><circle cx="107" cy="41" r="2.6" fill="#2a1c00"/></g>
+                <path d="M93 49 Q100 54 107 49" fill="none" stroke="#2a1c00" stroke-width="2" stroke-linecap="round"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="fizinfo">
+        <div class="fizstep" id="fizStep">10 упражнений · 4 минуты</div>
+        <div class="fizname" id="fizName">Готовы размяться?</div>
+        <div class="fiztxt" id="fizTxt">Встаньте рядом с партой, задвиньте стул и нажмите «Начать».</div>
+        <div class="ringbox">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="rbg"/><circle cx="60" cy="60" r="54" class="rfg" id="fizRing"/></svg>
+          <div class="ringnum" id="fizSec">4:00</div>
+          <div class="breathlbl" id="fizBreath"></div>
+        </div>
+        <div class="fiznext" id="fizNext"></div>
+        <div class="fizctl">
+          <button class="bigbtn" id="fizPlay" style="font-size:19px;padding:13px 28px">▶ Начать</button>
+          <button class="btn" id="fizSkip" title="Следующее упражнение">⏭</button>
+          <button class="btn" id="fizReset" title="Сначала">↺</button>
+          <button class="btn-ai" id="fizMusic" title="Ритм вкл/выкл">🥁 Ритм</button>
+        </div>
+      </div>
+    </div>
+    <div class="fizbar" id="fizBar"><div class="fill" id="fizFill"></div></div>
+    <div class="fiztotal" id="fizTotal">Осталось: 4:00</div>
+  </section>
+
   <!-- Voice recorder (for the teacher) -->
   <section id="s-rec" class="hidden">
     <h2 class="sec-title">🎙 Мой голос</h2>
-    <div class="sec-sub">Запишите фразы своим голосом — ИИ-ведущий будет говорить вашим голосом.</div>
+    <div class="sec-sub">Запишите фразы физминутки своим голосом — ведущий будет говорить вашим голосом.</div>
     <div class="recinfo">
       <b>Как записать:</b>
       <ol>
@@ -361,6 +575,35 @@ const RULES = {
   match:"Слева — слова, справа — объяснения. Нажмите на слово, потом на подходящее объяснение. Верная пара станет зелёной. Если не получается, нажмите «Подсказка ИИ» — я подсвечу правильную пару."
 };
 
+/* Физминутка: t — секунды (всего 240 = 4 минуты), bpm — темп ритма */
+const FIZ = [
+  {id:"stretch", emoji:"🙆", name:"Потягивание", t:20, bpm:60,
+   txt:"Поднимите руки вверх и потянитесь на носочках — как можно выше, до самого потолка!"},
+  {id:"head", emoji:"👀", name:"Повороты головы", t:20, bpm:60,
+   txt:"Плавно поворачиваем голову: посмотрели на окно — посмотрели на доску. Медленно, без рывков."},
+  {id:"arms", emoji:"🔄", name:"Круги руками", t:25, bpm:90,
+   txt:"Руки в стороны. Круговые движения руками: вперёд, а потом назад."},
+  {id:"march", emoji:"🚶", name:"Шаги на месте", t:30, bpm:112,
+   txt:"Шагаем на месте рядом с партой, высоко поднимая колени. Руки помогают!"},
+  {id:"bend", emoji:"↔️", name:"Наклоны в стороны", t:25, bpm:70,
+   txt:"Руки на пояс. Наклоны в стороны: влево — вправо. Спина прямая."},
+  {id:"squat", emoji:"🏋️", name:"Приседания", t:25, bpm:70,
+   txt:"Приседаем, руки вперёд, спина прямая. Вниз — и встаём!"},
+  {id:"clap", emoji:"👏", name:"Хлопки в ритм", t:25, bpm:100,
+   txt:"Хлопок в ладоши — хлопок по коленям. Держим ритм всем классом!"},
+  {id:"run", emoji:"🏃", name:"Бег на месте", t:25, bpm:150,
+   txt:"Быстрый бег на месте! Кто самый энергичный в классе?"},
+  {id:"twist", emoji:"🔁", name:"Повороты корпуса", t:20, bpm:70,
+   txt:"Руки в стороны. Повороты корпуса влево и вправо. Ноги стоят на месте."},
+  {id:"breath", emoji:"🧘", name:"Дыхание", t:25, bpm:0,
+   txt:"Руки поднимаем — глубокий вдох. Опускаем — медленный выдох. Успокаиваемся и готовимся работать дальше."},
+];
+const FIZ_PH={
+  ready:"Приготовились! Встаньте рядом с партой и задвиньте стул. Начинаем физминутку!",
+  done:"Отлично! Физминутка окончена. Садитесь на свои места — продолжаем урок!"
+};
+const fizSay=e=>e.name+"! "+e.txt;
+
 const PRAISE=["Отлично! Так держать!","Верно! Ауэзов был бы доволен.","Правильно! Ты внимательно читал.","Блестяще!","Точно в цель!"];
 const COMFORT=["Не беда, ошибка — тоже шаг к знанию.","Почти! Запомни правильный ответ.","Ничего страшного, разберём вместе.","Хорошая попытка! Посмотри объяснение."];
 const pick=a=>a[Math.random()*a.length|0];
@@ -392,20 +635,9 @@ const pairHint=(l,r)=>"Подсказка: «"+l+"» — это "+r+".";
 
 /* Полный список фраз для страницы «Мой голос» */
 function allPhrases(){
+  /* голос звучит только в физминутке — значит, записывать нужно только эти фразы */
   const g=[];
-  g.push({title:"Приветствие и правила",items:[PH.greet,RULES.chests,RULES.tf,RULES.match]});
-  g.push({title:"Похвала и поддержка",items:[...PRAISE,...COMFORT]});
-  CHESTS.forEach((c,i)=>{
-    const it=[];
-    if(c.type==="fact") it.push(factText(c));
-    else { it.push(c.q); if(c.type==="mc"){it.push(optsText(c));} it.push(hintText(c)); if(c.type==="mc"){ if(c.note) it.push(c.note); it.push(ansText(c)); } }
-    g.push({title:"Сундук №"+(i+1),items:it});
-  });
-  g.push({title:"Верно / Неверно — утверждения",items:TF.map(t=>t.s)});
-  g.push({title:"Верно / Неверно — объяснения",items:TF.map(t=>t.e)});
-  g.push({title:"Соедини — подсказки (герои)",items:MATCH.heroes.map(p=>pairHint(p[0],p[1]))});
-  g.push({title:"Соедини — подсказки (понятия)",items:MATCH.terms.map(p=>pairHint(p[0],p[1]))});
-  g.push({title:"Служебные фразы",items:[PH.timeUp,PH.removed,PH.allChests,PH.notUnderstoodMc,PH.notUnderstoodTf,PH.tfGreat,PH.tfGood,PH.tfLow,PH.matchPerfect,PH.matchDone,PH.wrongPair,PH.allFound,PH.noSR,PH.sample]});
+  g.push({title:"Физминутка",items:[FIZ_PH.ready,...FIZ.map(fizSay),FIZ_PH.done]});
   const seen=new Set(); g.forEach(x=>x.items=x.items.filter(t=>{const k=hkey(t);if(seen.has(k))return false;seen.add(k);return true;}));
   return g;
 }
@@ -475,7 +707,8 @@ function playParts(parts){
 function say(parts,speakIt=true){
   parts=[].concat(parts).filter(Boolean);
   aiText.textContent=parts.join(" "); aiBox.classList.remove("min");
-  if(!voiceOn||!speakIt) return; playParts(parts);
+  /* голосом ведущий говорит только в физминутке; в играх — только текст */
+  if(!voiceOn||!speakIt||!document.body.classList.contains("fizmode")) return; playParts(parts);
 }
 aiFace.onclick=()=>aiBox.classList.toggle("min");
 document.getElementById("voiceBtn").onclick=e=>{voiceOn=!voiceOn;e.currentTarget.classList.toggle("on",voiceOn);if(!voiceOn)stopVoice();};
@@ -509,8 +742,10 @@ const navBtns=[...document.querySelectorAll("#nav button")];
 function show(s){navBtns.forEach(b=>b.classList.toggle("on",b.dataset.s===s));
   document.getElementById("recBtn").classList.toggle("on",s==="rec");
   document.querySelectorAll("main>section").forEach(x=>x.classList.toggle("hidden",x.id!=="s-"+s)); SND.click();
+  document.body.classList.toggle("fizmode",s==="fiz");
+  if(s!=="fiz" && fz.running) fizPause();
   if(s==="rec"){renderRec();aiBox.classList.add("min");return;}
-  say({chests:"Игра «Сундуки». Нажмите «объясни правила», если нужно — я расскажу.",tf:"Игра «Верно или неверно». Можно отвечать голосом!",match:"Игра «Соедини пары». Если трудно — я подскажу."}[s],false);}
+  say({chests:"Игра «Сундуки». Нажмите «объясни правила», если нужно — я расскажу.",tf:"Игра «Верно или неверно». Можно отвечать голосом!",match:"Игра «Соедини пары». Если трудно — я подскажу.",fiz:"Физминутка! Встаньте рядом с партами и нажмите «Начать»."}[s],false);}
 navBtns.forEach(b=>b.onclick=()=>show(b.dataset.s));
 document.querySelectorAll(".rulesbtn").forEach(b=>b.onclick=()=>say(RULES[b.dataset.rules]));
 document.getElementById("soundBtn").onclick=e=>{soundOn=!soundOn;e.currentTarget.textContent=soundOn?"🔊":"🔇";};
@@ -571,7 +806,6 @@ function openChest(i,b){
       <div class="heard" id="mHeard"></div>
       <div class="note hidden" id="mNote"></div>
       <div class="mrow"><span class="tlabel"></span>
-        <button class="btn-ai" id="mRead">🔈 Прочитать</button>
         <button class="btn-ai" id="mHint">💡 Подсказка ИИ</button>
         <button class="btn-ai" id="mMic">🎤 Ответить голосом</button>
         <button class="btn hidden" id="mClose">Дальше →</button></div>`;
@@ -588,7 +822,6 @@ function openChest(i,b){
       mbox.querySelector("#mClose").classList.remove("hidden");
     };
     optEls.forEach(o=>o.onclick=()=>answer(+o.dataset.k));
-    mbox.querySelector("#mRead").onclick=()=>say([c.q,optsText(c)]);
     mbox.querySelector("#mHint").onclick=e=>{
       e.currentTarget.disabled=true; SND.magic();
       const wrong=c.opts.map((_,k)=>k).filter(k=>k!==c.a).sort(()=>Math.random()-.5).slice(0,2);
@@ -648,7 +881,6 @@ tfMic.onclick=()=>listen(tfMic,tfHeard,t=>{
   else if(/верн|правд|правильн|да\b|^да/.test(t)) tfAnswer(1);
   else say(PH.notUnderstoodTf);
 });
-document.getElementById("tfRead").onclick=()=>{ if(tfI<TF.length) say(TF[tfI].s); };
 tfNext.onclick=()=>{tfI++;tfShow();SND.click(); if(tfI<TF.length) say(TF[tfI].s);};
 document.getElementById("tfRestart").onclick=()=>{tfI=0;tfOk=0;tfShow();};
 tfShow();
@@ -684,6 +916,90 @@ document.getElementById("matchHint").onclick=()=>{
 document.querySelectorAll("#matchSeg button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#matchSeg button").forEach(x=>x.classList.toggle("on",x===b));mSet=b.dataset.m;buildMatch();});
 document.getElementById("matchRestart").onclick=buildMatch;
 buildMatch();
+
+/* =====================================================================
+   ФИЗМИНУТКА
+   ===================================================================== */
+const stage=document.getElementById("stage"), FIZ_TOTAL=FIZ.reduce((s,e)=>s+e.t,0);
+const fz={phase:"idle",i:-1,left:0,running:false,last:0,timer:null,lastSec:null,breathHalf:-1};
+let musicOn=true;
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+
+/* ритм: бочка, малый барабан, хэт — генерируются браузером */
+let noiseBuf=null, beatTimer=null, nextT=0, beatI=0;
+function noise(){ if(noiseBuf) return noiseBuf; const c=ac(), b=c.createBuffer(1,c.sampleRate*.5,c.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return noiseBuf=b; }
+function kick(t){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);
+  g.gain.setValueAtTime(.45,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.3);}
+function hiss(t,freq,dur,vol){const c=ac(),s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=noise();f.type="highpass";f.frequency.value=freq;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f).connect(g).connect(c.destination);s.start(t);s.stop(t+dur);}
+function stopBeat(){clearInterval(beatTimer);beatTimer=null;}
+function startBeat(bpm,clap){
+  stopBeat(); if(!bpm||!musicOn||!soundOn) return; const c=ac(); nextT=c.currentTime+.05; beatI=0; const step=60/bpm/2;
+  beatTimer=setInterval(()=>{ while(nextT<c.currentTime+.12){ const i=beatI%4;
+    if(i===0) kick(nextT); if(i===2) clap?hiss(nextT,1200,.12,.35):hiss(nextT,1500,.1,.16); hiss(nextT,7000,.03,.05);
+    nextT+=step; beatI++; } },25);
+}
+function gong(){[110,165,220,330].forEach((f,k)=>tone(f,2.2-k*.3,"sine",.16/(k+1)));}
+function beep(hi){tone(hi?1320:880,.15,"square",.08);}
+function fanfare(){[523,659,784,1046,784,1046].forEach((f,i)=>tone(f,.35,"triangle",.18,i*.14));}
+
+function buildFizBar(){const bar=document.getElementById("fizBar"); bar.querySelectorAll(".seg").forEach(x=>x.remove());
+  FIZ.forEach(e=>{const s=document.createElement("div");s.className="seg";s.style.width=(e.t/FIZ_TOTAL*100)+"%";s.title=e.name;bar.insertBefore(s,bar.firstChild);});}
+function setStage(id,bpm){stage.className="stage ex-"+id+(fz.running?"":" paused"); stage.style.setProperty("--b",(60/(bpm||60))+"s");}
+function fizInfo(step,emoji,name,txt){document.getElementById("fizStep").textContent=step;document.getElementById("exEmoji").textContent=emoji;
+  document.getElementById("fizName").textContent=name;document.getElementById("fizTxt").textContent=txt;}
+function elapsed(){ if(fz.phase!=="ex") return fz.phase==="done"?FIZ_TOTAL:0;
+  let s=0; for(let k=0;k<fz.i;k++) s+=FIZ[k].t; return s+FIZ[fz.i].t-fz.left/1000; }
+function fizUI(){
+  const ring=document.getElementById("fizRing"), sec=document.getElementById("fizSec");
+  const dur=fz.phase==="ex"?FIZ[fz.i].t*1000:fz.phase==="ready"?5000:1;
+  ring.style.strokeDashoffset=fz.phase==="idle"?0:fz.phase==="done"?339.3:339.3*(1-fz.left/dur);
+  sec.textContent=fz.phase==="idle"?fmt(FIZ_TOTAL):fz.phase==="done"?"✔":Math.ceil(fz.left/1000);
+  sec.classList.toggle("warn",(fz.phase==="ex"||fz.phase==="ready")&&fz.left<=3000);
+  const el=elapsed(); document.getElementById("fizFill").style.width=(el/FIZ_TOTAL*100)+"%";
+  document.getElementById("fizTotal").textContent=fz.phase==="done"?"Физминутка завершена 💪":"Осталось: "+fmt(FIZ_TOTAL-el);
+  const nx=fz.phase==="ready"?FIZ[0]:fz.phase==="ex"?FIZ[fz.i+1]:null;
+  document.getElementById("fizNext").textContent=nx?"Дальше: "+nx.emoji+" "+nx.name:"";
+  const bl=document.getElementById("fizBreath");
+  if(fz.phase==="ex"&&FIZ[fz.i].id==="breath"){const half=Math.floor((FIZ[fz.i].t*1000-fz.left)/4000);bl.textContent=half%2?"Выдох…":"Вдох…";
+    if(half!==fz.breathHalf){fz.breathHalf=half; if(fz.running) tone(half%2?520:660,1.4,"sine",.1);}} else bl.textContent="";
+  document.getElementById("fizPlay").textContent=fz.running?"⏸ Пауза":fz.phase==="idle"||fz.phase==="done"?"▶ Начать":"▶ Продолжить";
+}
+function fizGo(i){
+  fz.i=i; fz.lastSec=null; fz.breathHalf=-1;
+  if(i>=FIZ.length){ fz.phase="done"; fz.running=false; clearInterval(fz.timer); stopBeat(); setStage("done",120);
+    stage.classList.remove("paused"); fizInfo("Готово!","🏆","Молодцы! 💪","Физминутка окончена. Садитесь на свои места — продолжаем урок!");
+    fanfare(); confetti(); say(FIZ_PH.done); fizUI(); return; }
+  const e=FIZ[i]; fz.phase="ex"; fz.left=e.t*1000; setStage(e.id,e.bpm);
+  fizInfo(`Упражнение ${i+1} из ${FIZ.length}`,e.emoji,e.name,e.txt);
+  gong(); say(fizSay(e)); if(fz.running) startBeat(e.bpm,e.id==="clap"); fizUI();
+}
+function fizTick(){
+  const now=performance.now(), dt=now-fz.last; fz.last=now; if(!fz.running) return;
+  fz.left-=dt; const s=Math.ceil(fz.left/1000);
+  if(s!==fz.lastSec){ fz.lastSec=s; if(s>=1&&s<=3) beep(false); }
+  if(fz.left<=0){ beep(true); fizGo(fz.phase==="ready"?0:fz.i+1); }
+  fizUI();
+}
+function fizPlay(){
+  ac();
+  if(fz.phase==="idle"||fz.phase==="done"){ fz.phase="ready"; fz.i=-1; fz.left=5000; fz.lastSec=null; fz.running=true;
+    setStage("ready",60); fizInfo("Подготовка","🙋","Приготовились!","Встаньте рядом с партой и задвиньте стул. Начинаем физминутку!");
+    gong(); say(FIZ_PH.ready); }
+  else { fz.running=true; stage.classList.remove("paused"); if(fz.phase==="ex") startBeat(FIZ[fz.i].bpm,FIZ[fz.i].id==="clap"); }
+  fz.last=performance.now(); clearInterval(fz.timer); fz.timer=setInterval(fizTick,100); fizUI();
+}
+function fizPause(){ fz.running=false; clearInterval(fz.timer); stopBeat(); stopVoice(); stage.classList.add("paused"); fizUI(); }
+function fizReset(){ fizPause(); fz.phase="idle"; fz.i=-1; fz.left=0; setStage("idle",60); stage.classList.remove("paused");
+  fizInfo("10 упражнений · 4 минуты","🤸","Готовы размяться?","Встаньте рядом с партой, задвиньте стул и нажмите «Начать»."); fizUI(); }
+document.getElementById("fizPlay").onclick=()=>fz.running?fizPause():fizPlay();
+document.getElementById("fizSkip").onclick=()=>{ if(fz.phase==="idle"||fz.phase==="done"){fz.running=true;fz.last=performance.now();clearInterval(fz.timer);fz.timer=setInterval(fizTick,100);fizGo(0);return;}
+  fizGo(fz.phase==="ready"?0:fz.i+1); };
+document.getElementById("fizReset").onclick=fizReset;
+document.getElementById("fizMusic").onclick=e=>{musicOn=!musicOn;e.currentTarget.classList.toggle("off",!musicOn);
+  if(!musicOn) stopBeat(); else if(fz.running&&fz.phase==="ex") startBeat(FIZ[fz.i].bpm,FIZ[fz.i].id==="clap");};
+buildFizBar(); fizReset();
 
 /* =====================================================================
    МОЙ ГОЛОС — запись фраз голосом учителя
