@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Путь Абая — интерактивный урок, 9 класс</title>
+<style>
+:root{
+  --bg:#0f1a2b; --card:#1d2f4a; --gold:#e8b94a; --gold2:#f6d98a;
+  --txt:#f3eee2; --muted:#a9b4c6; --ok:#3fbf7f; --bad:#e2574c; --blue:#4aa3e8; --ai:#8f7cff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(1200px 700px at 50% -10%,#24406a 0%,var(--bg) 60%);color:var(--txt);
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 8c8 10 8 18 0 24-8-6-8-14 0-24zm0 64c-8-10-8-18 0-24 8 6 8 14 0 24zM8 40c10-8 18-8 24 0-6 8-14 8-24 0zm64 0c-10 8-18 8-24 0 6-8 14-8 24 0z' fill='%23e8b94a'/%3E%3C/svg%3E");}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0}
+button{font:inherit;cursor:pointer;border:0}
+button:disabled{cursor:default}
+.hidden{display:none!important}
+
+/* ---------- Intro ---------- */
+#intro{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:18px}
+#intro .orn{font-size:42px;color:var(--gold);letter-spacing:12px}
+#intro h1{font-size:clamp(38px,6vw,76px);color:var(--gold2);text-shadow:0 4px 30px rgba(232,185,74,.35)}
+#intro .sub{font-size:clamp(16px,2vw,24px);color:var(--muted)}
+#intro .meta{font-size:15px;color:var(--muted);opacity:.8}
+#introVideo{max-width:min(900px,92vw);max-height:55vh;border-radius:16px;border:2px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.bigbtn{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#2a1c00;font-weight:700;font-size:22px;
+  padding:16px 42px;border-radius:999px;box-shadow:0 8px 30px rgba(232,185,74,.4);transition:transform .15s}
+.bigbtn:hover{transform:translateY(-2px) scale(1.03)}
+
+/* ---------- Header ---------- */
+header{position:sticky;top:0;z-index:20;background:rgba(15,26,43,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,185,74,.25)}
+.hrow{display:flex;align-items:center;gap:10px;padding:10px 20px;flex-wrap:wrap}
+.logo{font-family:Georgia,serif;color:var(--gold2);font-size:20px;font-weight:700;margin-right:auto;cursor:pointer}
+.logo small{display:block;font-family:"Segoe UI",sans-serif;color:var(--muted);font-size:12px;font-weight:400}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:var(--card);color:var(--txt);padding:9px 16px;border-radius:12px;font-size:15px}
+nav button.on{background:var(--gold);color:#2a1c00;font-weight:700}
+.iconbtn{background:var(--card);color:var(--txt);border-radius:10px;padding:8px 12px;font-size:16px}
+.iconbtn.on{background:var(--ai);color:#fff}
+
+main{padding:24px 20px 140px;max-width:1250px;margin:0 auto}
+.sec-title{text-align:center;margin-bottom:6px;color:var(--gold2);font-size:clamp(24px,3vw,36px)}
+.sec-sub{text-align:center;color:var(--muted);margin-bottom:14px}
+.rulesbtn{display:block;margin:0 auto 24px;background:rgba(143,124,255,.18);color:#d6cfff;border:2px solid var(--ai);padding:9px 20px;border-radius:999px;font-size:16px}
+.rulesbtn:hover{background:rgba(143,124,255,.32)}
+
+/* ---------- Chests ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px}
+.chest{aspect-ratio:1/.9;perspective:800px;background:none;padding:0}
+.chest .inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.chest.opened .inner{transform:rotateY(180deg)}
+.chest .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.chest .front{background:linear-gradient(180deg,#8a5a2b,#5e3a19);border:3px solid var(--gold);box-shadow:inset 0 -10px 0 rgba(0,0,0,.25),0 10px 25px rgba(0,0,0,.4)}
+.chest .front:before{content:"";position:absolute;left:0;right:0;top:34%;height:8px;background:var(--gold);opacity:.85}
+.chest .front:after{content:"";position:absolute;top:28%;left:50%;width:26px;height:30px;margin-left:-13px;background:var(--gold2);border-radius:6px;box-shadow:0 0 0 3px #6b4a12}
+.chest .num{position:absolute;bottom:12%;font-size:34px;font-weight:800;color:var(--gold2);text-shadow:0 2px 0 #3a2208}
+.chest:hover .front{filter:brightness(1.15)}
+.chest .back{transform:rotateY(180deg);background:#21344f;border:3px solid #3a5276;color:var(--muted);font-size:15px;text-align:center;padding:10px}
+.chest .back.ok{border-color:var(--ok);color:var(--ok)}
+.chest .back.bad{border-color:var(--bad);color:var(--bad)}
+.chest .back.fact{border-color:var(--ai);color:#d6cfff}
+.chest .back b{font-size:40px;display:block}
+.toolbar{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+.progress{text-align:center;color:var(--gold2);margin-bottom:16px;font-size:17px}
+
+/* ---------- Modal ---------- */
+#modal{position:fixed;inset:0;z-index:50;background:rgba(5,10,20,.75);display:flex;align-items:center;justify-content:center;padding:20px}
+.mbox{background:linear-gradient(180deg,#203654,#172840);border:2px solid var(--gold);border-radius:24px;max-width:880px;width:100%;
+  padding:30px 34px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .35s cubic-bezier(.2,1.5,.4,1);max-height:92vh;overflow:auto}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.mtag{display:inline-block;background:var(--gold);color:#2a1c00;font-weight:700;border-radius:999px;padding:4px 12px;font-size:14px;margin-bottom:12px}
+.mq{font-size:clamp(22px,2.6vw,32px);line-height:1.3;font-family:Georgia,serif;margin-bottom:20px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{background:var(--card);color:var(--txt);text-align:left;padding:16px 18px;border-radius:14px;font-size:19px;border:2px solid #34507a;transition:.15s}
+.opt:hover:not(:disabled){border-color:var(--gold)}
+.opt b{color:var(--gold2);margin-right:8px}
+.opt.ok{background:rgba(63,191,127,.25);border-color:var(--ok)}
+.opt.bad{background:rgba(226,87,76,.25);border-color:var(--bad)}
+.opt.gone{opacity:.25;text-decoration:line-through}
+.hint{background:rgba(232,185,74,.1);border-left:4px solid var(--gold);padding:12px 16px;border-radius:8px;color:var(--gold2);margin:10px 0 18px;font-size:17px}
+.note{margin-top:16px;font-size:17px;color:var(--muted)}
+.mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap;align-items:center}
+.btn-ok{background:var(--ok);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:17px}
+.btn-bad{background:var(--bad);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:17px}
+.btn{background:#2f4a72;color:var(--txt);padding:12px 22px;border-radius:12px;font-size:17px}
+.btn-ai{background:rgba(143,124,255,.2);color:#e2dcff;border:2px solid var(--ai);padding:10px 18px;border-radius:12px;font-size:16px}
+.btn-ai:disabled{opacity:.4}
+.btn-ai.listening{background:var(--bad);border-color:var(--bad);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(226,87,76,0)}0%{box-shadow:0 0 0 0 rgba(226,87,76,.6)}}
+.heard{font-size:15px;color:#d6cfff;min-height:20px;margin-top:10px}
+.tbar{height:8px;background:#0e1828;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.tbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--gold),var(--bad));width:100%;transition:width 1s linear}
+.tlabel{font-size:14px;color:var(--muted);margin-right:auto}
+.factbig{text-align:center;font-size:70px;animation:spin .9s ease}
+@keyframes spin{from{transform:rotate(-200deg) scale(.2)}to{transform:none}}
+
+/* ---------- True / False ---------- */
+.tf{max-width:820px;margin:0 auto;text-align:center}
+.tf .card{background:var(--card);border:2px solid #34507a;border-radius:24px;padding:40px 30px;min-height:220px;display:flex;align-items:center;justify-content:center;
+  font-family:Georgia,serif;font-size:clamp(22px,3vw,34px);line-height:1.35}
+.tf .card.ok{border-color:var(--ok);box-shadow:0 0 30px rgba(63,191,127,.3)}
+.tf .card.bad{border-color:var(--bad);box-shadow:0 0 30px rgba(226,87,76,.3)}
+.tf .btns{display:flex;gap:14px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.tf .btns .big{font-size:24px;padding:16px 40px;border-radius:16px;font-weight:700;color:#fff}
+.tf .prog{color:var(--muted);margin-bottom:12px}
+.tf .expl{min-height:56px;margin-top:16px;font-size:19px;color:var(--gold2)}
+
+/* ---------- Match ---------- */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1000px;margin:0 auto}
+.match .col{display:flex;flex-direction:column;gap:12px}
+.mi{background:var(--card);color:var(--txt);border:2px solid #34507a;border-radius:14px;padding:16px 18px;font-size:18px;text-align:left;transition:.15s}
+.mi.left{font-weight:700;color:var(--gold2);font-family:Georgia,serif;font-size:21px}
+.mi.sel{border-color:var(--gold);box-shadow:0 0 16px rgba(232,185,74,.4)}
+.mi.done{border-color:var(--ok);background:rgba(63,191,127,.15);opacity:.75;cursor:default}
+.mi.wrong{animation:shake .4s;border-color:var(--bad)}
+.mi.glow{border-color:var(--ai);box-shadow:0 0 18px rgba(143,124,255,.6)}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.seg{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+.seg button{background:var(--card);color:var(--txt);padding:8px 18px;border-radius:10px}
+.seg button.on{background:var(--blue);color:#fff}
+
+/* ---------- AI assistant ---------- */
+#ai{position:fixed;right:18px;bottom:18px;z-index:40;display:flex;align-items:flex-end;gap:10px;max-width:min(520px,calc(100vw - 36px))}
+#aiBubble{background:#231f45;border:2px solid var(--ai);border-radius:18px 18px 4px 18px;padding:12px 16px;font-size:16px;line-height:1.4;
+  box-shadow:0 10px 30px rgba(0,0,0,.45);color:#ece9ff}
+#aiBubble b{color:#bfb3ff;display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+#aiFace{flex:none;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#b9adff,#5a45d6);border:3px solid #cfc6ff;
+  display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 0 0 rgba(143,124,255,.6);cursor:pointer}
+#aiFace.talk{animation:talk .5s infinite alternate}
+@keyframes talk{to{box-shadow:0 0 0 12px rgba(143,124,255,0);transform:scale(1.06)}}
+#ai.min #aiBubble{display:none}
+
+/* ---------- Voice recorder ---------- */
+.recinfo{max-width:900px;margin:0 auto 18px;background:rgba(143,124,255,.12);border:2px solid var(--ai);border-radius:16px;padding:14px 18px;font-size:16px;line-height:1.5;color:#e2dcff}
+.recinfo ol{margin:6px 0 0;padding-left:22px}
+.recgroup{max-width:900px;margin:22px auto 8px;color:var(--gold2);font-family:Georgia,serif;font-size:22px}
+.recrow{max-width:900px;margin:0 auto 8px;display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid #34507a;border-radius:12px;padding:10px 12px}
+.recrow.has{border-color:var(--ok)}
+.recrow .t{flex:1;font-size:16px;line-height:1.35}
+.recrow .st{font-size:13px;color:var(--muted);width:92px;text-align:center}
+.recrow.has .st{color:var(--ok)}
+.recrow button{background:#2a4064;color:var(--txt);border-radius:9px;padding:8px 11px;font-size:15px;white-space:nowrap}
+.recrow button.rec{background:#7a2a2a}
+.recrow button.rec.listening{background:var(--bad);animation:pulse 1s infinite}
+.recrow button:disabled{opacity:.35}
+.recbar{position:sticky;top:64px;z-index:5;max-width:900px;margin:0 auto 10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:rgba(15,26,43,.95);padding:10px 0}
+.recbar .p{margin-right:auto;color:var(--gold2);font-size:17px}
+
+/* ---------- Confetti ---------- */
+.cf{position:fixed;top:-10px;width:10px;height:14px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+@media (max-width:700px){.opts,.match{grid-template-columns:1fr}.mbox{padding:22px}#aiBubble{font-size:14px}}
+</style>
+</head>
+<body>
+
+<!-- ================= INTRO ================= -->
+<section id="intro">
+  <div class="orn">❖ ❖ ❖</div>
+  <h1>Путь Абая</h1>
+  <div class="sub">Вершина казахской литературы · М. О. Ауэзов · роман-эпопея</div>
+  <!-- Чтобы показать видео со звуком: положите файл video.mp4 рядом с index.html -->
+  <video id="introVideo" class="hidden" src="video.mp4" controls playsinline preload="metadata"></video>
+  <button class="bigbtn" id="startBtn">▶ Начать урок</button>
+  <div class="meta">9 класс · Русский язык и литература · Раздел III «История и личность»</div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+<header>
+  <div class="hrow">
+    <div class="logo" id="logo">Путь Абая<small>интерактивные игры · 9 класс</small></div>
+    <nav id="nav">
+      <button data-s="chests" class="on">🎁 Сундуки</button>
+      <button data-s="tf">✔✘ Верно / Неверно</button>
+      <button data-s="match">🔗 Соедини</button>
+    </nav>
+    <button class="iconbtn on" id="voiceBtn" title="Включить / выключить голос ИИ-ведущего">🗣 Голос</button>
+    <select id="voiceSel" class="iconbtn" title="Выбрать голос ведущего" style="max-width:190px"></select>
+    <button class="iconbtn" id="recBtn" title="Записать свой голос для ведущего">🎙 Мой голос</button>
+    <button class="iconbtn" id="soundBtn" title="Звуки">🔊</button>
+    <button class="iconbtn" id="fsBtn" title="Во весь экран">⛶</button>
+  </div>
+</header>
+
+<main>
+  <!-- Chests -->
+  <section id="s-chests">
+    <h2 class="sec-title">Сундуки с заданиями</h2>
+    <div class="sec-sub">Выбери сундук — внутри вопрос, задание или интересный факт.</div>
+    <button class="rulesbtn" data-rules="chests">🤖 ИИ-ведущий, объясни правила</button>
+    <div class="progress" id="chestProg"></div>
+    <div class="grid" id="grid"></div>
+    <div class="toolbar"><button class="btn" id="resetChests">↺ Закрыть все сундуки</button></div>
+  </section>
+
+  <!-- True/False -->
+  <section id="s-tf" class="hidden">
+    <h2 class="sec-title">Верно или неверно?</h2>
+    <div class="sec-sub">Нажми кнопку или скажи ответ вслух в микрофон.</div>
+    <button class="rulesbtn" data-rules="tf">🤖 ИИ-ведущий, объясни правила</button>
+    <div class="tf">
+      <div class="prog" id="tfProg"></div>
+      <div class="card" id="tfCard"></div>
+      <div class="btns" id="tfBtns">
+        <button class="big" style="background:var(--ok)" data-v="1">Верно</button>
+        <button class="big" style="background:var(--bad)" data-v="0">Неверно</button>
+      </div>
+      <div class="btns"><button class="btn-ai" id="tfMic">🎤 Ответить голосом</button><button class="btn-ai" id="tfRead">🔈 Прочитать вслух</button></div>
+      <div class="heard" id="tfHeard"></div>
+      <div class="expl" id="tfExpl"></div>
+      <div class="toolbar"><button class="btn hidden" id="tfNext">Дальше →</button><button class="btn" id="tfRestart">↺ Сначала</button></div>
+    </div>
+  </section>
+
+  <!-- Match -->
+  <section id="s-match" class="hidden">
+    <h2 class="sec-title">Соедини пары</h2>
+    <div class="sec-sub">Нажми на слово слева, затем на подходящее объяснение справа.</div>
+    <button class="rulesbtn" data-rules="match">🤖 ИИ-ведущий, объясни правила</button>
+    <div class="seg" id="matchSeg">
+      <button data-m="heroes" class="on">Герои романа</button>
+      <button data-m="terms">Понятия урока</button>
+    </div>
+    <div class="match" id="matchBox"></div>
+    <div class="toolbar"><button class="btn-ai" id="matchHint">💡 Подсказка ИИ</button><button class="btn" id="matchRestart">↺ Перемешать</button></div>
+  </section>
+
+  <!-- Voice recorder (for the teacher) -->
+  <section id="s-rec" class="hidden">
+    <h2 class="sec-title">🎙 Мой голос</h2>
+    <div class="sec-sub">Запишите фразы своим голосом — ИИ-ведущий будет говорить вашим голосом.</div>
+    <div class="recinfo">
+      <b>Как записать:</b>
+      <ol>
+        <li>Нажмите <b>● Записать</b> у фразы, прочитайте её вслух и нажмите <b>■ Стоп</b>. Запись сразу проиграется.</li>
+        <li>Не понравилось — просто запишите заново. Можно записать не все фразы: остальные прочитает компьютерный голос.</li>
+        <li>В конце нажмите <b>💾 Сохранить голос в файл</b> и положите файл <b>golos.js</b> в ту же папку, где лежит index.html. Тогда ваш голос будет звучать на любом компьютере и телефоне.</li>
+      </ol>
+    </div>
+    <div class="recbar">
+      <span class="p" id="recProg"></span>
+      <button class="btn-ok" id="recExport">💾 Сохранить голос в файл</button>
+      <button class="btn" id="recImport">📂 Загрузить файл</button>
+      <button class="btn-bad" id="recClear">🗑 Удалить все</button>
+      <input type="file" id="recFile" accept=".js" class="hidden">
+    </div>
+    <div id="recList"></div>
+  </section>
+</main>
+</div>
+
+<!-- ================= AI ASSISTANT ================= -->
+<div id="ai" class="hidden">
+  <div id="aiBubble"><b>ИИ-ведущий</b><span id="aiText">Салем! Я ваш ИИ-ведущий.</span></div>
+  <div id="aiFace" title="Свернуть / развернуть">🤖</div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div id="modal" class="hidden"><div class="mbox" id="mbox"></div></div>
+
+<!-- Записанный голос учителя (файл появляется после «Сохранить голос в файл») -->
+<script src="golos.js" onerror="void 0"></script>
+<script>
+/* =====================================================================
+   ДАННЫЕ — вопросы можно менять здесь
+   type: "mc"   — вопрос с вариантами (a = номер правильного, с 0), hint — подсказка ИИ
+         "open" — открытый вопрос, учитель отмечает ответ сам
+         "fact" — интересный факт
+   ===================================================================== */
+const CHESTS = [
+  {type:"mc", q:"Кто автор романа-эпопеи «Путь Абая»?",
+   opts:["Сабит Муканов","Мухтар Ауэзов","Ильяс Есенберлин","Габит Мусрепов"], a:1,
+   hint:"Его имя носит Казахский академический театр драмы в Алматы.",
+   note:"Мухтар Омарханович Ауэзов (1897–1961) — классик казахской литературы."},
+  {type:"mc", q:"Что такое эпос?",
+   opts:["Род литературы, повествующий о событиях и героях","Короткое стихотворение о чувствах","Пьеса для постановки на сцене","Научная статья о писателе"], a:0,
+   hint:"Эпос — это рассказ. Вспомни три рода литературы: эпос, лирика, драма.",
+   note:"Эпос — один из трёх родов литературы (эпос, лирика, драма)."},
+  {type:"mc", q:"Роман-эпопея — это…",
+   opts:["любая очень толстая книга","стихотворная поэма о богатырях","крупное повествовательное произведение, где судьбы героев раскрываются на широком фоне исторической и общественной жизни","сборник рассказов одного автора"], a:2,
+   hint:"Важен не объём книги, а то, насколько широко показана жизнь общества."},
+  {type:"mc", q:"Кто главный герой произведения?",
+   opts:["Кунанбай","Абай Кунанбаев (Кунанбайулы)","Мухтар Ауэзов","Биржан-сал"], a:1,
+   hint:"Ответ спрятан в самом названии романа.",
+   note:"Абай — великий казахский поэт, мыслитель, просветитель."},
+  {type:"open", q:"Можно ли через судьбу одного человека показать жизнь целого общества?",
+   hint:"Ответ — своё мнение + пример. Опора: «Да, потому что… Например, в «Пути Абая»…»"},
+  {type:"mc", q:"Как зовут отца Абая?",
+   opts:["Божей","Байсал","Кунанбай","Оспан"], a:2,
+   hint:"Фамилия Абая — Кунанбаев. От какого имени она образована?",
+   note:"Кунанбай — властный и влиятельный правитель рода, отец Абая."},
+  {type:"fact", text:"Роман «Путь Абая» переведён на многие языки мира и стал одной из самых известных книг казахской литературы."},
+  {type:"mc", q:"Какой из пунктов НЕ является признаком роман-эпопеи?",
+   opts:["Широкий охват жизни общества","Связь частной судьбы героя с эпохой","Просто большой объём книги","Разветвлённая система персонажей"], a:2,
+   hint:"Ищи вариант, где говорится о количестве страниц, а не о содержании.",
+   note:"Важен не объём, а то, ЧТО изображено широко: жизнь общества и эпоха."},
+  {type:"open", q:"Назови два признака роман-эпопеи и объясни один из них своими словами.",
+   hint:"Признаки: широкий охват жизни общества; связь частной судьбы с эпохой; система персонажей."},
+  {type:"mc", q:"Кто автор монографии «Мастерство Мухтара Ауэзова»?",
+   opts:["Е. Лизунова","М. Ауэзов","Абай","Л. Толстой"], a:0,
+   hint:"Этот фрагмент вы читаете в упражнении 6 на странице 152."},
+  {type:"mc", q:"На каком языке Ауэзов написал роман?",
+   opts:["На русском","На казахском","На татарском","На английском"], a:1,
+   hint:"Ауэзов писал на родном языке своего народа.",
+   note:"Роман написан на казахском языке и переведён на многие языки мира, в том числе на русский."},
+  {type:"open", q:"Выбери персонажа фрагмента (упр. 5, с. 152). Назови его качество и докажи цитатой или поступком.",
+   hint:"Схема: «Герой проявляет… Это видно, когда… Следовательно…»"},
+  {type:"mc", q:"Годы жизни Абая Кунанбаева:",
+   opts:["1799–1837","1845–1904","1897–1961","1828–1910"], a:1,
+   hint:"Абай жил во второй половине XIX века и умер в начале XX века.",
+   note:"1897–1961 — годы жизни самого Мухтара Ауэзова."},
+  {type:"fact", text:"Абай переводил на казахский язык Пушкина, Лермонтова и Крылова. Песню на его перевод письма Татьяны из «Евгения Онегина» пели в степи."},
+  {type:"mc", q:"Как называется знаменитый прозаический труд Абая?",
+   opts:["«Слова назидания» («Қара сөздер»)","«Путь Абая»","«Евгений Онегин»","«Кобланды-батыр»"], a:0,
+   hint:"По-казахски это произведение называется «Қара сөздер»."},
+  {type:"open", q:"Как произведение о личности помогает понять её эпоху?",
+   hint:"Схема: тезис → художественный пример → мысль исследователя → вывод."},
+];
+
+const TF = [
+  {s:"«Путь Абая» — это поэма-эпопея.", v:0, e:"Неверно: это РОМАН-эпопея, прозаическое произведение."},
+  {s:"Главный герой произведения — поэт Абай Кунанбаев.", v:1, e:"Верно!"},
+  {s:"Роман «Путь Абая» написал сам Абай.", v:0, e:"Неверно: автор — Мухтар Ауэзов, а Абай — герой романа."},
+  {s:"Роман был написан на казахском языке.", v:1, e:"Верно! Затем его перевели на русский и многие другие языки."},
+  {s:"Главный признак роман-эпопеи — большой объём книги.", v:0, e:"Неверно: главное — широкий охват жизни общества и связь судьбы героя с эпохой."},
+  {s:"В роман-эпопее судьба героя связана с жизнью народа и эпохи.", v:1, e:"Верно! Это один из главных признаков жанра."},
+  {s:"Эпос, лирика и драма — три рода литературы.", v:1, e:"Верно!"},
+  {s:"Кунанбай — сын Абая.", v:0, e:"Неверно: Кунанбай — отец Абая."},
+  {s:"За эпопею «Путь Абая» Ауэзов получил Ленинскую премию.", v:1, e:"Верно! Премия была присуждена в 1959 году."},
+  {s:"Абай переводил на казахский язык стихи Пушкина и Лермонтова.", v:1, e:"Верно! Например, письмо Татьяны из «Евгения Онегина»."},
+];
+
+const MATCH = {
+  heroes:[
+    ["Кунанбай","отец Абая, властный правитель рода"],
+    ["Улжан","мать Абая"],
+    ["Зере","бабушка Абая, которую он нежно любил"],
+    ["Тогжан","первая любовь Абая"],
+    ["Абиш","сын Абая"],
+    ["Дармен","молодой акын, ученик Абая"],
+  ],
+  terms:[
+    ["Эпос","род литературы, повествующий о событиях и героях"],
+    ["Роман-эпопея","крупное произведение: судьбы героев на фоне исторической и общественной жизни"],
+    ["Тезис","главная мысль, которую нужно доказать"],
+    ["Цитата","точные слова из текста, взятые в кавычки"],
+    ["Аргумент","доказательство, подтверждающее тезис"],
+    ["Монография","научный труд, посвящённый одной теме или писателю"],
+  ]
+};
+
+const RULES = {
+  chests:"Перед вами шестнадцать сундуков. Выберите номер — сундук откроется, и внутри будет вопрос, задание или интересный факт. На вопрос есть время, оно показано полоской. Если трудно — нажмите «Подсказка ИИ», и я уберу два неверных варианта. Можно ответить голосом: нажмите микрофон и назовите ответ.",
+  tf:"Я покажу десять утверждений о романе «Путь Абая». Решите, верно это или неверно. Нажмите кнопку или нажмите микрофон и скажите вслух: «верно» или «неверно». После ответа я объясню, почему.",
+  match:"Слева — слова, справа — объяснения. Нажмите на слово, потом на подходящее объяснение. Верная пара станет зелёной. Если не получается, нажмите «Подсказка ИИ» — я подсвечу правильную пару."
+};
+
+const PRAISE=["Отлично! Так держать!","Верно! Ауэзов был бы доволен.","Правильно! Ты внимательно читал.","Блестяще!","Точно в цель!"];
+const COMFORT=["Не беда, ошибка — тоже шаг к знанию.","Почти! Запомни правильный ответ.","Ничего страшного, разберём вместе.","Хорошая попытка! Посмотри объяснение."];
+const pick=a=>a[Math.random()*a.length|0];
+
+/* Постоянные фразы ведущего (их можно записать своим голосом) */
+const PH={
+  greet:"Салем, девятый класс! Я ваш ИИ-ведущий. Сегодня мы путешествуем по роману Мухтара Ауэзова «Путь Абая». Выбирайте игру!",
+  timeUp:"Время вышло!",
+  removed:"Я убрал два неверных варианта.",
+  allChests:"Все сундуки открыты! Вы отлично поработали. Молодцы!",
+  notUnderstoodMc:"Не понял ответ. Назовите букву варианта или сам ответ.",
+  notUnderstoodTf:"Не понял. Скажите «верно» или «неверно».",
+  tfGreat:"Великолепно! Вы настоящие знатоки романа!",
+  tfGood:"Хорошо! Но кое-что стоит повторить.",
+  tfLow:"Давайте ещё раз перечитаем материал урока и попробуем снова.",
+  matchPerfect:"Все пары найдены без единой ошибки! Превосходно!",
+  matchDone:"Все пары найдены! Молодцы!",
+  wrongPair:"Не та пара. Попробуйте ещё раз!",
+  allFound:"Все пары уже найдены!",
+  noSR:"Голосовые ответы работают в браузерах Chrome и Edge. Пожалуйста, ответьте кнопкой.",
+  sample:"Здравствуйте, ребята! Так звучит мой голос.",
+};
+const LET=["А","Б","В","Г"];
+const optsText=c=>"Варианты ответа: "+c.opts.map((o,k)=>LET[k]+" — "+o).join("; ")+".";
+const ansText=c=>"Правильный ответ: "+c.opts[c.a]+".";
+const hintText=c=>"Подсказка: "+c.hint;
+const factText=c=>"Интересный факт! "+c.text;
+const pairHint=(l,r)=>"Подсказка: «"+l+"» — это "+r+".";
+
+/* Полный список фраз для страницы «Мой голос» */
+function allPhrases(){
+  const g=[];
+  g.push({title:"Приветствие и правила",items:[PH.greet,RULES.chests,RULES.tf,RULES.match]});
+  g.push({title:"Похвала и поддержка",items:[...PRAISE,...COMFORT]});
+  CHESTS.forEach((c,i)=>{
+    const it=[];
+    if(c.type==="fact") it.push(factText(c));
+    else { it.push(c.q); if(c.type==="mc"){it.push(optsText(c));} it.push(hintText(c)); if(c.type==="mc"){ if(c.note) it.push(c.note); it.push(ansText(c)); } }
+    g.push({title:"Сундук №"+(i+1),items:it});
+  });
+  g.push({title:"Верно / Неверно — утверждения",items:TF.map(t=>t.s)});
+  g.push({title:"Верно / Неверно — объяснения",items:TF.map(t=>t.e)});
+  g.push({title:"Соедини — подсказки (герои)",items:MATCH.heroes.map(p=>pairHint(p[0],p[1]))});
+  g.push({title:"Соедини — подсказки (понятия)",items:MATCH.terms.map(p=>pairHint(p[0],p[1]))});
+  g.push({title:"Служебные фразы",items:[PH.timeUp,PH.removed,PH.allChests,PH.notUnderstoodMc,PH.notUnderstoodTf,PH.tfGreat,PH.tfGood,PH.tfLow,PH.matchPerfect,PH.matchDone,PH.wrongPair,PH.allFound,PH.noSR,PH.sample]});
+  const seen=new Set(); g.forEach(x=>x.items=x.items.filter(t=>{const k=hkey(t);if(seen.has(k))return false;seen.add(k);return true;}));
+  return g;
+}
+
+/* =====================================================================
+   ЗВУКИ (генерируются браузером, файлы не нужны)
+   ===================================================================== */
+let AC=null, soundOn=true;
+function ac(){ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); return AC; }
+function tone(f,d,type="sine",vol=.2,delay=0){
+  if(!soundOn) return; const c=ac(), o=c.createOscillator(), g=c.createGain(), t=c.currentTime+delay;
+  o.type=type; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.001,t+d);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+d);
+}
+const SND={
+  click(){tone(600,.08,"triangle",.15)},
+  open(){[300,420,560,760].forEach((f,i)=>tone(f,.25,"triangle",.15,i*.07))},
+  ok(){[523,659,784,1046].forEach((f,i)=>tone(f,.3,"sine",.2,i*.1))},
+  bad(){tone(180,.4,"sawtooth",.12);tone(140,.5,"sawtooth",.1,.15)},
+  tick(){tone(1000,.04,"square",.05)},
+  end(){tone(400,.6,"square",.12)},
+  magic(){[880,1175,1568].forEach((f,i)=>tone(f,.35,"sine",.12,i*.08))}
+};
+
+/* =====================================================================
+   ИИ-ВЕДУЩИЙ: синтез речи (озвучка) и распознавание речи (голосовые ответы)
+   Работает в Chrome и Edge. Распознаванию речи нужен интернет и микрофон.
+   ===================================================================== */
+const synth=window.speechSynthesis; let voiceOn=true, ruVoice=null;
+const voiceSel=document.getElementById("voiceSel");
+/* Чем выше в списке — тем лучше голос. Светлана и Дария — живые женские нейро-голоса браузера Edge. */
+const VOICE_RANK=[/svetlana/i,/dariya/i,/(online|natural)(?!.*(dmitry|pavel))/i,/google/i,/irina/i,/milena|katya|anna|female|жен/i];
+const isMale=n=>/dmitry|pavel|maxim|yuri|\bmale\b/i.test(n);
+const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+const rankOf=v=>{const r=VOICE_RANK.findIndex(re=>re.test(v.name));return (r<0?50:r)+(isMale(v.name)?100:0);};
+function pickVoice(){
+  if(!synth) return; const vs=synth.getVoices().filter(v=>/^ru/i.test(v.lang)).sort((a,b)=>rankOf(a)-rankOf(b));
+  if(!vs.length){voiceSel.innerHTML='<option>Нет русского голоса</option>';return;}
+  const saved=store.get("abaiVoice");
+  ruVoice=vs.find(v=>v.name===saved)||vs[0];
+  voiceSel.innerHTML=vs.map(v=>{const nice=v.name.replace(/^Microsoft\s+/,"").replace(/\s*-\s*Russian.*$/,"").replace(/\s*\(Natural\)/,"");
+    return `<option value="${v.name}"${v===ruVoice?" selected":""}>${isMale(v.name)?"👨":"👩"} ${nice}${/online|natural/i.test(v.name)?" ★":""}</option>`;}).join("");
+}
+if(synth){pickVoice(); synth.onvoiceschanged=pickVoice;}
+voiceSel.onchange=()=>{ruVoice=synth.getVoices().find(v=>v.name===voiceSel.value)||ruVoice;store.set("abaiVoice",voiceSel.value);
+  say(PH.sample);};
+const aiBox=document.getElementById("ai"), aiText=document.getElementById("aiText"), aiFace=document.getElementById("aiFace");
+/* ---------- Записи голоса учителя ----------
+   Каждая фраза имеет ключ (по её тексту). Если для фразы есть запись — играет запись,
+   иначе фразу читает компьютерный голос. */
+function hkey(t){let h=5381;t=t.trim();for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return "p"+(h>>>0).toString(36);}
+const REC={}; if(window.GOLOS) Object.assign(REC,window.GOLOS);
+let curAudio=null, playId=0;
+function stopVoice(){playId++; if(synth)synth.cancel(); if(curAudio){curAudio.pause();curAudio=null;} aiFace.classList.remove("talk");}
+function utter(t){const u=new SpeechSynthesisUtterance(t.replace(/[«»"]/g,"")); u.lang="ru-RU"; if(ruVoice) u.voice=ruVoice;
+  const neural=ruVoice&&/online|natural/i.test(ruVoice.name); u.rate=neural?1:.92; u.pitch=neural?1:1.08; return u;}
+function playParts(parts){
+  stopVoice(); const id=playId; let i=0;
+  const next=()=>{ if(id!==playId) return; if(i>=parts.length){aiFace.classList.remove("talk");curAudio=null;return;}
+    const t=parts[i++]; aiFace.classList.add("talk"); const url=REC[hkey(t)];
+    if(url){const a=new Audio(url); curAudio=a; a.onended=a.onerror=next; a.play().catch(next);}
+    else if(synth){const u=utter(t); u.onend=u.onerror=next; synth.speak(u);}
+    else next(); };
+  next();
+}
+/* parts — одна фраза или массив фраз, которые звучат подряд */
+function say(parts,speakIt=true){
+  parts=[].concat(parts).filter(Boolean);
+  aiText.textContent=parts.join(" "); aiBox.classList.remove("min");
+  if(!voiceOn||!speakIt) return; playParts(parts);
+}
+aiFace.onclick=()=>aiBox.classList.toggle("min");
+document.getElementById("voiceBtn").onclick=e=>{voiceOn=!voiceOn;e.currentTarget.classList.toggle("on",voiceOn);if(!voiceOn)stopVoice();};
+
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function listen(btn,heardEl,onText){
+  if(!SR){say(PH.noSR);return;}
+  stopVoice();
+  const r=new SR(); r.lang="ru-RU"; r.interimResults=true; r.maxAlternatives=3;
+  btn.classList.add("listening"); const old=btn.textContent; btn.textContent="🎤 Слушаю…"; heardEl.textContent="";
+  let final="";
+  r.onresult=e=>{let t="";for(const res of e.results){t+=res[0].transcript; if(res.isFinal) final=[...res].map(a=>a.transcript).join(" | ");} heardEl.textContent="Я слышу: «"+t+"»";};
+  r.onerror=e=>{heardEl.textContent=e.error==="not-allowed"?"Нет доступа к микрофону — разрешите его в браузере.":e.error==="network"?"Для распознавания речи нужен интернет.":"Не расслышал, попробуйте ещё раз.";};
+  r.onend=()=>{btn.classList.remove("listening");btn.textContent=old; if(final) onText(final.toLowerCase().replace(/ё/g,"е"));};
+  r.start();
+}
+const norm=s=>s.toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-яәіңғүұқөһ0-9 ]/gi," ").split(/\s+/).filter(w=>w.length>2);
+function matchOption(text,opts){
+  const letters=[/(^|\s)(а|вариант а|первый|первое|один)(\s|$)/,/(^|\s)(б|бэ|вариант б|второй|второе|два)(\s|$)/,/(^|\s)(в|вэ|вариант в|третий|третье|три)(\s|$)/,/(^|\s)(г|гэ|вариант г|четвертый|четвертое|четыре)(\s|$)/];
+  const words=norm(text); let best=-1,score=0;
+  opts.forEach((o,k)=>{const ow=norm(o); let s=0; ow.forEach(w=>{if(words.some(x=>x.slice(0,5)===w.slice(0,5)))s++;}); if(s>score){score=s;best=k;}});
+  if(best>=0) return best;
+  for(let k=0;k<opts.length;k++) if(letters[k].test(text)) return k;
+  return -1;
+}
+
+/* =====================================================================
+   НАВИГАЦИЯ
+   ===================================================================== */
+const navBtns=[...document.querySelectorAll("#nav button")];
+function show(s){navBtns.forEach(b=>b.classList.toggle("on",b.dataset.s===s));
+  document.getElementById("recBtn").classList.toggle("on",s==="rec");
+  document.querySelectorAll("main>section").forEach(x=>x.classList.toggle("hidden",x.id!=="s-"+s)); SND.click();
+  if(s==="rec"){renderRec();aiBox.classList.add("min");return;}
+  say({chests:"Игра «Сундуки». Нажмите «объясни правила», если нужно — я расскажу.",tf:"Игра «Верно или неверно». Можно отвечать голосом!",match:"Игра «Соедини пары». Если трудно — я подскажу."}[s],false);}
+navBtns.forEach(b=>b.onclick=()=>show(b.dataset.s));
+document.querySelectorAll(".rulesbtn").forEach(b=>b.onclick=()=>say(RULES[b.dataset.rules]));
+document.getElementById("soundBtn").onclick=e=>{soundOn=!soundOn;e.currentTarget.textContent=soundOn?"🔊":"🔇";};
+document.getElementById("fsBtn").onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();};
+
+/* ---------- Intro + video ---------- */
+const vid=document.getElementById("introVideo"), startBtn=document.getElementById("startBtn");
+let hasVideo=false;
+vid.addEventListener("loadedmetadata",()=>{hasVideo=true;});
+function goApp(){vid.pause();document.getElementById("intro").classList.add("hidden");document.getElementById("app").classList.remove("hidden");aiBox.classList.remove("hidden");
+  say(PH.greet);}
+startBtn.onclick=()=>{ ac(); SND.open();
+  if(hasVideo && vid.classList.contains("hidden")){vid.classList.remove("hidden");vid.play();startBtn.textContent="▶ К играм";}
+  else goApp();};
+vid.addEventListener("ended",goApp);
+document.getElementById("logo").onclick=()=>{document.getElementById("app").classList.add("hidden");aiBox.classList.add("hidden");document.getElementById("intro").classList.remove("hidden");stopVoice();};
+
+/* =====================================================================
+   СУНДУКИ
+   ===================================================================== */
+const grid=document.getElementById("grid"), modal=document.getElementById("modal"), mbox=document.getElementById("mbox");
+let timerId=null, opened=0, correct=0;
+function updProg(){document.getElementById("chestProg").textContent=`Открыто сундуков: ${opened} из ${CHESTS.length} · верных ответов: ${correct}`;}
+function buildChests(){
+  grid.innerHTML=""; opened=0; correct=0; updProg();
+  CHESTS.forEach((c,i)=>{
+    const b=document.createElement("button"); b.className="chest";
+    b.innerHTML=`<div class="inner"><div class="face front"><span class="num">${i+1}</span></div><div class="face back"></div></div>`;
+    b.onclick=()=>{ if(b.classList.contains("opened")) return; b.classList.add("opened"); SND.open(); setTimeout(()=>openChest(i,b),550); };
+    grid.appendChild(b);
+  });
+}
+function closeModal(){modal.classList.add("hidden");clearInterval(timerId);stopVoice();}
+function startTimer(sec){
+  clearInterval(timerId); let left=sec; const bar=mbox.querySelector(".tbar i"), lab=mbox.querySelector(".tlabel");
+  const upd=()=>{bar.style.width=(left/sec*100)+"%";lab.textContent="⏱ "+left+" сек.";};
+  upd(); timerId=setInterval(()=>{left--; if(left<=5&&left>0) SND.tick(); if(left<=0){clearInterval(timerId);left=0;SND.end();say(PH.timeUp,true);} upd();},1000);
+}
+function finish(b,kind,label){
+  const back=b.querySelector(".back"); back.className="face back "+kind;
+  back.innerHTML=`<b>${kind==="ok"?"✔":kind==="bad"?"✘":"💡"}</b>${label}`; opened++; if(kind==="ok")correct++; updProg();
+  if(opened===CHESTS.length){confetti();say(PH.allChests);}
+}
+function openChest(i,b){
+  const c=CHESTS[i];
+  if(c.type==="fact"){
+    mbox.innerHTML=`<div class="factbig">💡</div><span class="mtag">Интересный факт</span><div class="mq">${c.text}</div>
+      <div class="mrow"><button class="btn-ok" id="mClose">Интересно!</button></div>`;
+    modal.classList.remove("hidden"); SND.magic(); say(factText(c));
+    mbox.querySelector("#mClose").onclick=()=>{finish(b,"fact","Факт");closeModal();};
+    return;
+  }
+  const tag=`<span class="mtag">Сундук №${i+1}</span>`;
+  if(c.type==="mc"){
+    const L="АБВГ";
+    mbox.innerHTML=`${tag}<div class="tbar"><i></i></div><div class="mq">${c.q}</div>
+      <div class="opts">${c.opts.map((o,k)=>`<button class="opt" data-k="${k}"><b>${L[k]}</b>${o}</button>`).join("")}</div>
+      <div class="heard" id="mHeard"></div>
+      <div class="note hidden" id="mNote"></div>
+      <div class="mrow"><span class="tlabel"></span>
+        <button class="btn-ai" id="mRead">🔈 Прочитать</button>
+        <button class="btn-ai" id="mHint">💡 Подсказка ИИ</button>
+        <button class="btn-ai" id="mMic">🎤 Ответить голосом</button>
+        <button class="btn hidden" id="mClose">Дальше →</button></div>`;
+    modal.classList.remove("hidden"); startTimer(45);
+    let res=null; const optEls=[...mbox.querySelectorAll(".opt")];
+    const answer=k=>{
+      if(res!==null) return; clearInterval(timerId); res=(k===c.a);
+      optEls.forEach(x=>{x.disabled=true; if(+x.dataset.k===c.a) x.classList.add("ok");});
+      if(!res) optEls[k].classList.add("bad");
+      const n=mbox.querySelector("#mNote"); if(c.note){n.textContent="💡 "+c.note;n.classList.remove("hidden");}
+      if(res){SND.ok();confetti();say([pick(PRAISE),c.note]);}
+      else{SND.bad();say([pick(COMFORT),ansText(c)]);}
+      ["mHint","mMic"].forEach(id=>mbox.querySelector("#"+id).disabled=true);
+      mbox.querySelector("#mClose").classList.remove("hidden");
+    };
+    optEls.forEach(o=>o.onclick=()=>answer(+o.dataset.k));
+    mbox.querySelector("#mRead").onclick=()=>say([c.q,optsText(c)]);
+    mbox.querySelector("#mHint").onclick=e=>{
+      e.currentTarget.disabled=true; SND.magic();
+      const wrong=c.opts.map((_,k)=>k).filter(k=>k!==c.a).sort(()=>Math.random()-.5).slice(0,2);
+      wrong.forEach(k=>{optEls[k].classList.add("gone");optEls[k].disabled=true;});
+      say([hintText(c),PH.removed]);
+    };
+    mbox.querySelector("#mMic").onclick=e=>listen(e.currentTarget,mbox.querySelector("#mHeard"),t=>{
+      const k=matchOption(t,c.opts);
+      if(k<0||optEls[k].disabled){say(PH.notUnderstoodMc);return;}
+      answer(k);
+    });
+    mbox.querySelector("#mClose").onclick=()=>{finish(b,res?"ok":"bad",res?"Верно":"Ошибка");closeModal();};
+    say(c.q,true);
+  } else {
+    mbox.innerHTML=`${tag}<div class="tbar"><i></i></div><div class="mq">${c.q}</div>
+      <div class="hint hidden" id="mHintBox">🧭 ${c.hint}</div>
+      <div class="note">Ответьте устно. Учитель отмечает результат.</div>
+      <div class="mrow"><span class="tlabel"></span>
+        <button class="btn-ai" id="mHint">💡 Подсказка ИИ</button>
+        <button class="btn-bad" id="mNo">✘ Не получилось</button>
+        <button class="btn-ok" id="mYes">✔ Ответ принят</button></div>`;
+    modal.classList.remove("hidden"); startTimer(90);
+    mbox.querySelector("#mHint").onclick=e=>{e.currentTarget.disabled=true;SND.magic();mbox.querySelector("#mHintBox").classList.remove("hidden");say(hintText(c));};
+    mbox.querySelector("#mYes").onclick=()=>{SND.ok();confetti();say(pick(PRAISE));finish(b,"ok","Принято");modal.classList.add("hidden");clearInterval(timerId);};
+    mbox.querySelector("#mNo").onclick=()=>{SND.bad();say(pick(COMFORT));finish(b,"bad","Повторить");modal.classList.add("hidden");clearInterval(timerId);};
+    say(c.q,true);
+  }
+}
+document.getElementById("resetChests").onclick=()=>{ if(confirm("Закрыть все сундуки заново?")) buildChests(); };
+buildChests();
+
+/* =====================================================================
+   ВЕРНО / НЕВЕРНО
+   ===================================================================== */
+let tfI=0, tfOk=0, tfDone=false; const tfCard=document.getElementById("tfCard"), tfExpl=document.getElementById("tfExpl"), tfNext=document.getElementById("tfNext");
+const tfBtns=[...document.querySelectorAll("#tfBtns button")], tfMic=document.getElementById("tfMic"), tfHeard=document.getElementById("tfHeard");
+function tfShow(){
+  tfCard.className="card"; tfExpl.textContent=""; tfHeard.textContent=""; tfNext.classList.add("hidden"); tfDone=false;
+  [...tfBtns,tfMic].forEach(b=>b.disabled=false);
+  if(tfI>=TF.length){
+    tfCard.textContent=`Готово! Правильных ответов: ${tfOk} из ${TF.length}`; document.getElementById("tfProg").textContent="";
+    [...tfBtns,tfMic].forEach(b=>b.disabled=true); if(tfOk>=7)confetti();
+    say(tfOk>=8?PH.tfGreat:tfOk>=5?PH.tfGood:PH.tfLow);
+    return;}
+  document.getElementById("tfProg").textContent=`Утверждение ${tfI+1} из ${TF.length} · правильно: ${tfOk}`;
+  tfCard.textContent=TF[tfI].s;
+}
+function tfAnswer(v){
+  if(tfDone) return; tfDone=true; const ok=(v===TF[tfI].v); [...tfBtns,tfMic].forEach(x=>x.disabled=true);
+  tfCard.classList.add(ok?"ok":"bad"); tfExpl.textContent=TF[tfI].e;
+  if(ok){tfOk++;SND.ok();say([pick(PRAISE),TF[tfI].e]);}else{SND.bad();say([pick(COMFORT),TF[tfI].e]);}
+  tfNext.classList.remove("hidden");
+}
+tfBtns.forEach(b=>b.onclick=()=>tfAnswer(+b.dataset.v));
+tfMic.onclick=()=>listen(tfMic,tfHeard,t=>{
+  if(/неверн|не верн|неправ|не прав|ложь|нет/.test(t)) tfAnswer(0);
+  else if(/верн|правд|правильн|да\b|^да/.test(t)) tfAnswer(1);
+  else say(PH.notUnderstoodTf);
+});
+document.getElementById("tfRead").onclick=()=>{ if(tfI<TF.length) say(TF[tfI].s); };
+tfNext.onclick=()=>{tfI++;tfShow();SND.click(); if(tfI<TF.length) say(TF[tfI].s);};
+document.getElementById("tfRestart").onclick=()=>{tfI=0;tfOk=0;tfShow();};
+tfShow();
+
+/* =====================================================================
+   СОЕДИНИ
+   ===================================================================== */
+let mSet="heroes", mSel=null, mDone=0, mMist=0;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+function buildMatch(){
+  const pairs=MATCH[mSet], box=document.getElementById("matchBox"); mSel=null; mDone=0; mMist=0;
+  box.innerHTML=`<div class="col" id="mL"></div><div class="col" id="mR"></div>`;
+  shuffle(pairs.map((p,i)=>i)).forEach(i=>{const b=document.createElement("button");b.className="mi left";b.textContent=pairs[i][0];b.dataset.i=i;box.querySelector("#mL").appendChild(b);});
+  shuffle(pairs.map((p,i)=>i)).forEach(i=>{const b=document.createElement("button");b.className="mi";b.textContent=pairs[i][1];b.dataset.i=i;box.querySelector("#mR").appendChild(b);});
+  box.querySelectorAll("#mL .mi").forEach(b=>b.onclick=()=>{ if(b.classList.contains("done"))return; box.querySelectorAll(".mi").forEach(x=>x.classList.remove("sel","glow")); b.classList.add("sel"); mSel=b; SND.click(); });
+  box.querySelectorAll("#mR .mi").forEach(b=>b.onclick=()=>{
+    if(!mSel||b.classList.contains("done"))return;
+    box.querySelectorAll(".mi").forEach(x=>x.classList.remove("glow"));
+    if(mSel.dataset.i===b.dataset.i){ mSel.classList.remove("sel"); mSel.classList.add("done"); b.classList.add("done"); b.disabled=mSel.disabled=true; SND.ok(); mSel=null; mDone++;
+      if(mDone===pairs.length){confetti();say(mMist===0?PH.matchPerfect:PH.matchDone);}
+      else say(pick(PRAISE),false); }
+    else { mMist++; b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong"); SND.bad(); say(PH.wrongPair,false); }
+  });
+}
+document.getElementById("matchHint").onclick=()=>{
+  const box=document.getElementById("matchBox");
+  const left=mSel||[...box.querySelectorAll("#mL .mi")].find(x=>!x.classList.contains("done"));
+  if(!left){say(PH.allFound);return;}
+  const right=[...box.querySelectorAll("#mR .mi")].find(x=>x.dataset.i===left.dataset.i);
+  box.querySelectorAll(".mi").forEach(x=>x.classList.remove("glow")); left.classList.add("glow"); right.classList.add("glow"); SND.magic();
+  say(pairHint(left.textContent,right.textContent));
+};
+document.querySelectorAll("#matchSeg button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#matchSeg button").forEach(x=>x.classList.toggle("on",x===b));mSet=b.dataset.m;buildMatch();});
+document.getElementById("matchRestart").onclick=buildMatch;
+buildMatch();
+
+/* =====================================================================
+   МОЙ ГОЛОС — запись фраз голосом учителя
+   Записи хранятся в браузере (IndexedDB) и сохраняются в файл golos.js
+   ===================================================================== */
+let DB=null;
+function idb(){return new Promise(res=>{ if(DB) return res(DB);
+  try{const r=indexedDB.open("abaiVoice",1); r.onupgradeneeded=()=>r.result.createObjectStore("rec");
+    r.onsuccess=()=>{DB=r.result;res(DB);}; r.onerror=()=>res(null);}catch(e){res(null);} });}
+async function idbPut(k,blob){const d=await idb(); if(!d) return; return new Promise(r=>{const t=d.transaction("rec","readwrite");t.objectStore("rec").put(blob,k);t.oncomplete=t.onerror=()=>r();});}
+async function idbDel(k){const d=await idb(); if(!d) return; return new Promise(r=>{const t=d.transaction("rec","readwrite");t.objectStore("rec").delete(k);t.oncomplete=t.onerror=()=>r();});}
+async function idbClear(){const d=await idb(); if(!d) return; return new Promise(r=>{const t=d.transaction("rec","readwrite");t.objectStore("rec").clear();t.oncomplete=t.onerror=()=>r();});}
+async function idbLoadAll(){const d=await idb(); if(!d) return; return new Promise(r=>{
+  const t=d.transaction("rec","readonly"), s=t.objectStore("rec"), req=s.openCursor();
+  req.onsuccess=()=>{const c=req.result; if(c){REC[c.key]=URL.createObjectURL(c.value); c.continue();} else r();}; req.onerror=()=>r();});}
+idbLoadAll().then(()=>{ if(!document.getElementById("s-rec").classList.contains("hidden")) renderRec(); });
+
+let micStream=null, recorder=null, recTimer=null;
+async function toggleRecord(k){
+  if(recorder){ recorder.stop(); return; }
+  try{ micStream=micStream||await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}); }
+  catch(e){ alert("Нет доступа к микрофону. Разрешите микрофон в браузере (значок слева от адреса) и попробуйте снова."); return; }
+  stopVoice(); const chunks=[];
+  try{ recorder=new MediaRecorder(micStream,{audioBitsPerSecond:64000}); }catch(e){ recorder=new MediaRecorder(micStream); }
+  recorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+  recorder.onstop=async()=>{
+    clearTimeout(recTimer); const type=recorder.mimeType||"audio/webm"; recorder=null;
+    if(!chunks.length){ renderRec(); return; }
+    const blob=new Blob(chunks,{type}); await idbPut(k,blob);
+    if(REC[k]&&REC[k].startsWith("blob:")) URL.revokeObjectURL(REC[k]);
+    REC[k]=URL.createObjectURL(blob); renderRec(); new Audio(REC[k]).play();
+  };
+  recorder.start(); recTimer=setTimeout(()=>recorder&&recorder.stop(),60000);
+  renderRec(k);
+}
+function renderRec(recording){
+  const list=document.getElementById("recList"); const groups=allPhrases(); let total=0, has=0;
+  list.innerHTML="";
+  groups.forEach(g=>{
+    const h=document.createElement("div"); h.className="recgroup"; h.textContent=g.title; list.appendChild(h);
+    g.items.forEach(t=>{
+      const k=hkey(t), ok=!!REC[k]; total++; if(ok) has++;
+      const isRec=recording===k;
+      const r=document.createElement("div"); r.className="recrow"+(ok?" has":"");
+      r.innerHTML=`<span class="t"></span><span class="st">${isRec?"🔴 идёт запись":ok?"✔ записано":"нет записи"}</span>
+        <button class="rec${isRec?" listening":""}">${isRec?"■ Стоп":"● Записать"}</button>
+        <button class="pl" ${ok?"":"disabled"} title="Прослушать">▶</button>
+        <button class="del" ${ok?"":"disabled"} title="Удалить запись">🗑</button>`;
+      r.querySelector(".t").textContent=t;
+      const recBtn=r.querySelector(".rec");
+      if(recording && !isRec) recBtn.disabled=true;
+      recBtn.onclick=()=>toggleRecord(k);
+      r.querySelector(".pl").onclick=()=>{stopVoice();curAudio=new Audio(REC[k]);curAudio.play();};
+      r.querySelector(".del").onclick=async()=>{ await idbDel(k); if(REC[k].startsWith("blob:"))URL.revokeObjectURL(REC[k]); delete REC[k]; renderRec(); };
+      list.appendChild(r);
+    });
+  });
+  document.getElementById("recProg").textContent=`Записано фраз: ${has} из ${total}`;
+}
+const toDataURL=url=>fetch(url).then(r=>r.blob()).then(b=>new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(b);}));
+document.getElementById("recExport").onclick=async()=>{
+  const keys=new Set(allPhrases().flatMap(g=>g.items).map(hkey)); const out={};
+  for(const k of Object.keys(REC)) if(keys.has(k)) out[k]=await toDataURL(REC[k]);
+  if(!Object.keys(out).length){alert("Пока нет ни одной записи.");return;}
+  const js="/* Голос учителя для сайта «Путь Абая». Положите этот файл рядом с index.html */\nwindow.GOLOS="+JSON.stringify(out)+";\n";
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([js],{type:"text/javascript"})); a.download="golos.js";
+  document.body.appendChild(a); a.click(); a.remove();
+  alert(`Сохранено записей: ${Object.keys(out).length}.\n\nФайл golos.js появится в папке «Загрузки». Перенесите его в папку с сайтом — рядом с index.html.`);
+};
+document.getElementById("recImport").onclick=()=>document.getElementById("recFile").click();
+document.getElementById("recFile").onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return; const txt=await f.text();
+  try{ const obj=JSON.parse(txt.slice(txt.indexOf("{"),txt.lastIndexOf("}")+1)); let n=0;
+    for(const [k,v] of Object.entries(obj)){ const b=await fetch(v).then(r=>r.blob()); await idbPut(k,b); REC[k]=URL.createObjectURL(b); n++; }
+    renderRec(); alert("Загружено записей: "+n);
+  }catch(err){ alert("Не удалось прочитать файл. Выберите файл golos.js, сохранённый этим сайтом."); }
+  e.target.value="";
+};
+document.getElementById("recClear").onclick=async()=>{
+  if(!confirm("Удалить все записи голоса в этом браузере? Файл golos.js, если он уже сохранён, останется.")) return;
+  await idbClear(); for(const k of Object.keys(REC)){ if(REC[k].startsWith("blob:")) URL.revokeObjectURL(REC[k]); delete REC[k]; }
+  if(window.GOLOS) Object.assign(REC,window.GOLOS); renderRec();
+};
+document.getElementById("recBtn").onclick=()=>show("rec");
+
+/* ---------- Confetti ---------- */
+function confetti(){const cols=["#e8b94a","#f6d98a","#4aa3e8","#8f7cff","#3fbf7f"];
+  for(let i=0;i<60;i++){const d=document.createElement("div");d.className="cf";d.style.left=Math.random()*100+"vw";
+    d.style.background=cols[i%cols.length];d.style.animationDuration=(1.5+Math.random()*1.5)+"s";d.style.animationDelay=Math.random()*.4+"s";
+    document.body.appendChild(d);setTimeout(()=>d.remove(),3500);}}
+</script>
+</body>
+</html>
